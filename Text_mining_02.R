@@ -25,3 +25,8 @@ tidy_books <- austen_books() %>%
 
 nrcjoy <- get_sentiments("nrc") %>% 
   filter(sentiments == "joy")
+
+tidy_books %>% 
+  filter(book == "Emma") %>% 
+  inner_join(nrcjoy) %>% 
+  count(word, sort = TRUE)
