@@ -1,5 +1,6 @@
 # install.packages("textdata")
-#install.packages("janeaustenr")
+# install.packages("janeaustenr")
+# install.packages("tidyr")
 
 library(tidytext)
 library(tidyr)
@@ -40,3 +41,14 @@ janeaustensentiment <- tidy_books %>%
 ggplot(janeaustensentiment, aes(index, sentiment, fill = book)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~book, ncol = 2, scales = "free_x")
+
+pride_prejudice <- tidy_books %>% 
+  filter(book == "Pride & Prejudice")
+
+pride_prejudice
+
+afinn <- pride_prejudice %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(index = linenumber %/% 80) %>% 
+  summarise(sentiment = sum(score)) %>% 
+  mutate(method = "AFINN")
