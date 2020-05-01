@@ -52,3 +52,15 @@ afinn <- pride_prejudice %>%
   group_by(index = linenumber %/% 80) %>% 
   summarise(sentiment = sum(score)) %>% 
   mutate(method = "AFINN")
+
+bing_and_nrc <- bing_rows(
+  pride_prejudice %>% 
+    inner_join(get_sentiments("bing")) %>% 
+    mutate(method = "Bing et al."),
+  pride_prejudice %>% 
+    inner_join(get_sentiments("nrc") %>% 
+                 filter(sentiment %in% c("positive", "negative"))) %>% 
+    mutate(method = "NRC")) %>% 
+    count(method, index = linenumber %/% 80, sentiment) %>% 
+    spread(sentiment, n, fill = 0) %>% 
+    mutate(sentiment = positive - negative)
